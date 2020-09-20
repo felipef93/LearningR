@@ -11,7 +11,7 @@ the basics and give you tools that you can perfect as you gain experience.
 
 ### And where do I go from there?
 
-[R for Data Science] (https://r4ds.had.co.nz/introduction.html) is a great beggininers book that has pretty much all the basics.
+[R for Data Science](https://r4ds.had.co.nz/introduction.html) is a great beggininers book that has pretty much all the basics.
 [CRAN](https://cran.r-project.org/) is also a great library where all R functions are described. 
 
 ### What if want to make graphics?
@@ -20,7 +20,7 @@ the basics and give you tools that you can perfect as you gain experience.
 
 ### And what about maps?
 
-[Geocomputation with R] (https://geocompr.robinlovelace.net/) have a lot of information on how to make maps
+[Geocomputation with R](https://geocompr.robinlovelace.net/) have a lot of information on how to make maps
 
 ### Now how do I make readable maps?
 
