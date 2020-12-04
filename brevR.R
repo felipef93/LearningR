@@ -8,14 +8,24 @@ library(ggplot2)
 
 #Input de dados
 setwd("C:/Users/ACER/Desktop/Brevipalpus/") #Local do arquivo
-dused<-read.csv('data2.csv',sep =';') #Nome do arquivo
+dused<-read.csv('data3.csv',sep =';') #Nome do arquivo
 standarderr =1.96 #Erro considerado aqui 1.96 = 95%
-acaros<-c('B incognitus-2','B_yothersi(?!-)','B_yothersi-1','B_yothersi-2',
-          'B_incognitus(?!-)','B_californicus-ss','B_californicus-1','B_californicus-2',
-          'B_lewisi','B_nsp','B_papayensis','B_obovatus','B_ferraguti','B_chilensis',
-          'B_oleae','B_cuneatus-1','B_cuneatus-2','C_pulcher','outgroup','B_phoenicis',
-          'B-oleae','B-nsp','B-yothersi-2','B-incognitus_1','Cenopalpus','B yothersi-1',
-          'P_phoenicis','B-papayensis','B californicus-ss')
+
+acaros<-c( # Nomes dos acaros
+          'californicus[-_]1','californicus[-_]2','californicus[-_]ss',
+          'cuneatus[-_]1','cuneatus[-_]2',
+          'chilensis', 'ferraguti',
+          'incognitus(?!-|_)','incognitus[-_]1','incognitus[-_]2',
+          'lewisi','B[-_]nsp','obovatus', 
+          'oleae','phoenicis','papayensis',
+          'yothersi(?!-)','yothersi[-_]1','yothersi[-_]2',
+          #Nomes dos grupos
+          'OBOVATUS','YOTHERSI','CALIFORNICUS','OLEAE',
+          'CUNEATUS', 'nso',
+          # Outros
+          'C_pulcher','Cenopalpus','outgroup'
+          )
+
 #Nomes dos acaros presentes no arquivo
 
 ###################################################################################################
