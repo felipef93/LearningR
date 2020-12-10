@@ -5,10 +5,11 @@
 #Call packages
 library(stringr)
 library(ggplot2)
+library(extRemes)
 
 #Input de dados
 setwd("C:/Users/ACER/Desktop/Brevipalpus/") #Local do arquivo
-dused<-read.csv('data3.csv',sep =';') #Nome do arquivo
+dused<-read.csv('data2.csv',sep =';') #Nome do arquivo
 standarderr =1.96 #Erro considerado aqui 1.96 = 95%
 
 acaros<-c( # Nomes dos acaros
@@ -135,3 +136,21 @@ message(paste('O ponto aproximado de interseccao das curvas e',
 #Tipos de especies
 speciesdiffbellowthreshold<-plotvalmin[round(inter2$x-intersecting$minimum,digits=3)>0,]
 speciessameabovetreshold<-plotvalmax[round(inter1$x-intersecting$minimum,digits=3)>0,]
+
+#Extreme values
+returnspecies<-fevd(plotvalmax$Meany,method='Lmoments',type='GEV')
+plot(returnspecies, type='rl',rperiods = c(2,10,20,50,100,200,292))
+returnperiod<-return.level(returnspecies, conf = 0.05, return.period= c(2, 5, 10, 20, 50,100,200,292))
+
+dbaseforsamplesize <-data.frame()
+x<-0
+for (n in 1:nrow(dclean)){
+          if(dclean[n,1]!=dclean[n,2]){
+                x<-x+1
+                dbaseforsamplesize[x,1:4]<-dclean[n,1:4]
+                }
+}
+nbrpairs<-fevd(x=1/dbaseforsamplesize$Dist,threshold = 1/0.03,method='Lmoments',type='GP',span=136, time.units="years")
+plot(nbrpairs, type='rl',rperiods = c(50,100,500,1000,5000,10000,20000,42486))
+#why 42486 -> 292!/(290!*2!) -> 292*291/2
+nbrpairsperiod<-return.level(nbrpairs, conf = 0.05, return.period= c(50,100,500,1000,5000,10000,20000,42486))
