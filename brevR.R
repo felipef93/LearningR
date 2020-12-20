@@ -18,7 +18,7 @@ acaros<-c( # Nomes dos acaros
           'chilensis', 'ferraguti',
           'incognitus(?!-|_)','incognitus[-_]1','incognitus[-_]2',
           'lewisi','B[-_]nsp','obovatus', 
-          'oleae','phoenicis','papayensis',
+          'oleae','_phoenicis','papayensis', 
           'yothersi(?!-)','yothersi[-_]1','yothersi[-_]2',
           #Nomes dos grupos
           'OBOVATUS','YOTHERSI','CALIFORNICUS','OLEAE',
@@ -111,36 +111,23 @@ names(plotvalmin)<-c("Cumdist","Meany","Miny","Maxy","Name1","Names2")
 #Output
 
 #Plot
-ggplot()+geom_point(data=plotvalmax,aes(x=Cumdist,y=Meany,col='red'))+
-  geom_smooth(data=plotvalmax,aes(x=Cumdist,y=Meany,col='red'),method='loess',formula=y~x,se=F)+
-  geom_smooth(data=plotvalmax,aes(x=Cumdist,y=Miny,col='red'),method='loess',formula=y~x,se=F, linetype='dashed')+
-  geom_smooth(data=plotvalmax,aes(x=Cumdist,y=Maxy,col='red'),method='loess',formula=y~x,se=F,linetype='dashed')+
-  geom_point(data=plotvalmin,aes(x=Cumdist,y=Meany,col='blue'))+
-  geom_smooth(data=plotvalmin,aes(x=Cumdist,y=Meany,col='blue'),method='loess',formula=y~x,se=F)+
-  geom_smooth(data=plotvalmin,aes(x=Cumdist,y=Miny,col='blue'),method='loess',formula=y~x,se=F,linetype='dashed')+
-  geom_smooth(data=plotvalmin,aes(x=Cumdist,y=Maxy,col='blue'),method='loess',formula=y~x,se=F,linetype='dashed')
-
-#Interseccao
-#Aqui voce escolhe o ponto que voce quer representar
-#O codigo e o seguinte: meany em inter1 e meany em inter2 = media
-# Maxy em inter 1 e Miny em inter 2 scenario mais rigoroso possivel
-# Miny em inter 1 e Maxy em inter 2 scenario menos rigoroso possivel
-inter1<-loess(Maxy~Cumdist,plotvalmax)
-inter2<-loess(Miny~Cumdist,plotvalmin)
-intersecting <- optimize(function(x, m1, m2) (predict(m1, x) - predict(m2, x))^2,
-                         0:1, inter1, inter2)  
-
-message(paste('O ponto aproximado de interseccao das curvas e',
-              (predict(inter2,intersecting$minimum)+predict(inter1,intersecting$minimum))/2))
-
-#Tipos de especies
-speciesdiffbellowthreshold<-plotvalmin[round(inter2$x-intersecting$minimum,digits=3)>0,]
-speciessameabovetreshold<-plotvalmax[round(inter1$x-intersecting$minimum,digits=3)>0,]
+ggplot()+geom_point(data=plotvalmax,aes(x=Cumdist,y=Meany),col='blue')+
+  geom_smooth(data=plotvalmax,aes(x=Cumdist,y=Meany,),col='blue',method='loess',formula=y~x,se=F)+
+  geom_smooth(data=plotvalmax,aes(x=Cumdist,y=Miny),col='blue',method='loess',formula=y~x,se=F, linetype='dashed')+
+  geom_smooth(data=plotvalmax,aes(x=Cumdist,y=Maxy),col='blue',method='loess',formula=y~x,se=F,linetype='dashed')+
+  geom_point(data=plotvalmin,aes(x=Cumdist,y=Meany),col='red')+
+  geom_smooth(data=plotvalmin,aes(x=Cumdist,y=Meany),col='red',method='loess',formula=y~x,se=F)+
+  geom_smooth(data=plotvalmin,aes(x=Cumdist,y=Miny),col='red',method='loess',formula=y~x,se=F,linetype='dashed')+
+  geom_smooth(data=plotvalmin,aes(x=Cumdist,y=Maxy),col='red',method='loess',formula=y~x,se=F,linetype='dashed')
 
 #Extreme values
 returnspecies<-fevd(plotvalmax$Meany,method='Lmoments',type='GEV')
-plot(returnspecies, type='rl',rperiods = c(2,10,20,50,100,200,292))
-returnperiod<-return.level(returnspecies, conf = 0.05, return.period= c(2, 5, 10, 20, 50,100,200,292))
+par(mfcol=c(1,1))
+returnperiod<-as.numeric(return.level(returnspecies, conf = 0.05, return.period= c(2, 5, 10, 20, 50,100,200,292)))
+names(returnperiod)<-paste(c(2,5,10,20,50,100,200,292),"species", sep= )
+xval1<-2:292
+plotrp<-as.numeric(return.level(returnspecies, conf = 0.05, return.period= 2:292))
+ggplot()+geom_smooth(aes(x=xval1,y=plotrp),method='loess',formula=y~x,se=F,col='blue')+scale_x_log10()
 
 dbaseforsamplesize <-data.frame()
 x<-0
@@ -150,7 +137,53 @@ for (n in 1:nrow(dclean)){
                 dbaseforsamplesize[x,1:4]<-dclean[n,1:4]
                 }
 }
-nbrpairs<-fevd(x=1/dbaseforsamplesize$Dist,threshold = 1/0.03,method='Lmoments',type='GP',span=136, time.units="years")
-plot(nbrpairs, type='rl',rperiods = c(50,100,500,1000,5000,10000,20000,42486))
+nbrpairs<-fevd(x=1/dbaseforsamplesize$Dist,threshold = 1/0.03,method='Lmoments',type='GP',span=nrow(plotvalmin), time.units="years")
 #why 42486 -> 292!/(290!*2!) -> 292*291/2
-nbrpairsperiod<-return.level(nbrpairs, conf = 0.05, return.period= c(50,100,500,1000,5000,10000,20000,42486))
+plotrp2<-as.numeric(return.level(nbrpairs, conf = 0.05, return.period= seq(50,42486,50)))
+plotrp2<-1/plotrp2
+xval2<-sqrt(seq(50,42486,50)*2)
+ggplot()+geom_smooth(aes(x=xval2,y=plotrp2),method='loess',formula=y~x,se=F,col='red')+scale_x_log10()
+nbrpairsperiod<-as.numeric(return.level(nbrpairs, conf = 0.05, return.period= c(50,100,500,1000,5000,10000,20000,42486)))
+names(nbrpairsperiod)<-paste(round(sqrt(c(50,100,500,1000,5000,10000,20000,42486)*2)),"species", sep= )
+
+###################################################################################################
+###################################################################################################
+###################################################################################################
+###################################################################################################
+###################################################################################################
+
+###########################################################################
+#             MODFICAR AQUI PARA PONTOS DE INTERSECCAO                    #
+###########################################################################
+#Aqui voce escolhe o ponto que voce quer representar
+#O codigo e o seguinte: meany em inter1 e meany em inter2 = media
+# Maxy em inter 1 e Miny em inter 2 scenario mais rigoroso possivel
+# Miny em inter 1 e Maxy em inter 2 scenario menos rigoroso possivel
+inter1<-loess(Maxy~Cumdist,plotvalmax) #Azul
+inter2<-loess(Miny~Cumdist,plotvalmin) #Vermelho
+intersecting <- optimize(function(x, m1, m2) (predict(m1, x) - predict(m2, x))^2,
+                         0:1, inter1, inter2)  
+
+message(paste('O ponto aproximado de interseccao das curvas e',
+              (predict(inter2,intersecting$minimum)+predict(inter1,intersecting$minimum))/2))
+#Tipos de especies
+speciesdiffbellowthreshold<-plotvalmin[round(inter2$x-intersecting$minimum,digits=3)>0,]
+speciessameabovetreshold<-plotvalmax[round(inter1$x-intersecting$minimum,digits=3)>0,]
+
+
+###########################################################################
+#                RODAR AQUI PARA VALORES EXTREMOS                         #
+###########################################################################
+message ("INTRA DIFF")
+returnperiod
+message("INTER DIFF")
+nbrpairsperiod
+
+
+
+
+
+#Remove uninportant data
+important<-c("dclean","dused","plotvalmax","plotvalmin","speciesdiffbellowthreshold",
+             "speciessameabovetreshold","returnperiod","nbrpairsperiod")
+rm(list=setdiff(ls(), important))
