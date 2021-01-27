@@ -2,7 +2,7 @@
 library(ggplot2)
 library(reshape2)
 #Importing train data
-setwd('C:/Users/ACER/Desktop/Titanic')
+setwd('C:/Users/GitCodes/LearningR/Titanic')
 traindata<-read.csv('train.csv')
 
 ##############################################################################################

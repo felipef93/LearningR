@@ -1,6 +1,6 @@
 library(rpart)
 #Importing train data
-setwd('C:/Users/ACER/Desktop/Titanic')
+setwd('C:/Users/GitCodes/LearningR/Titanic')
 traindata<-read.csv('train.csv')
 testdata<-read.csv('test.csv')
 ##############################################################################################
@@ -58,4 +58,4 @@ submission<-as.data.frame(submission) #Matrix transformed to data frame
 names(submission)<-c("PassengerId","Survived")#An given correct names
 
 write.csv(submission,file="submission.csv",row.names = FALSE) #Export as csv file
-
+#This model has accuracy 0.77990
