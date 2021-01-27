@@ -2,7 +2,7 @@
 
 **Objective**: Identify which of the stats are relevant to make a prediction algorithm
 
-### Fist Idea: Plot a histogram of all the relevant variables to the problem
+#### Fist Idea: Plot a histogram of all the relevant variables to the problem
 
 ![Histogram](histogram.png)
 
